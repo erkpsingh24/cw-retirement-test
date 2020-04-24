@@ -1,14 +1,16 @@
-package com.cwretirement.codetest;
+package com.cwretirement.codetest.model;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Builder;
 
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@Builder
 public class Contribution {
     private long memberAccountId;
     private String transactionId;
@@ -27,13 +29,13 @@ public class Contribution {
     }
 
     @Override
-    public String toString() {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            return mapper.writeValueAsString(this);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+        public String toString() {
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                return mapper.writeValueAsString(this);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
     }
 
     @Override
@@ -52,5 +54,18 @@ public class Contribution {
     @Override
     public int hashCode() {
         return Objects.hash(memberAccountId, transactionId, dateEntered, datePosted, amount, custodianReference);
+    }
+
+    public static Contribution fromTransaction(Transaction transaction) {
+        assert Transaction.Type.CONTRIBUTION.equals(transaction.getType());
+        return Contribution.builder()
+                                          .memberAccountId(Long.parseLong(transaction.getExplanation()))
+                                          .transactionId(transaction.getDescr())
+                                          .dateEntered(transaction.getEntered())
+                                          .datePosted(transaction.getPosted())
+                                          .amount(transaction.getAmount())
+                                          .custodianReference(transaction.getJob())
+                                          .build();
+
     }
 }
