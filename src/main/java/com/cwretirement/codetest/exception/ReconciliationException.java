@@ -1,4 +1,4 @@
-package com.cwretirement.codetest;
+package com.cwretirement.codetest.exception;
 
 public class ReconciliationException extends RuntimeException {
 

@@ -1,4 +1,8 @@
-package com.cwretirement.codetest;
+package com.cwretirement.codetest.model;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -7,13 +11,22 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+@Data
+@Builder
+@AllArgsConstructor
 public class Transaction {
 
+    @AllArgsConstructor
     public enum Type {
-        CONTRIBUTION;
+
+        CONTRIBUTION,
+        PURCHASE_TRADE,
+        SALE_TRADE;
 
         private static final Map<String, Type> TRANSACTION_DESCRIPTION_TO_TRANSACTION_TYPE = new HashMap<String, Type>() {{
             put("Contribution", CONTRIBUTION);
+            put("Purchase Cash Settlement", PURCHASE_TRADE);
+            put("Sale Cash Settlement", SALE_TRADE);
         }};
 
         public static Type fromString(String string) {
@@ -81,18 +94,5 @@ public class Transaction {
 
     public Type getType() {
         return type;
-    }
-
-    public Contribution toContribution() {
-        assert Type.CONTRIBUTION.equals(type);
-        Contribution result = new Contribution(
-                Long.parseLong(explanation),
-                descr,
-                entered,
-                posted,
-                amount,
-                job
-        );
-        return result;
     }
 }
